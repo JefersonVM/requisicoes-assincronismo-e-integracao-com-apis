@@ -2,6 +2,8 @@ const form = document.querySelector("#form-profile");
 const inputName = document.querySelector("#name-profile");
 const inputEmail = document.querySelector("#email-profile");
 const inputPassword = document.querySelector("#password-profile");
+const btnSignOut = document.querySelector(".sign-out-button");
+const btnDelete = document.querySelector("#form-profile .btn-cancel");
 
 const token = localStorage.getItem("token");
 
@@ -30,7 +32,7 @@ async function updateUserData() {
       {
         nome: inputName.value,
         email: inputEmail.value,
-        password: inputPassword.value,
+        senha: inputPassword.value,
       },
       {
         headers: {
@@ -55,4 +57,27 @@ form.addEventListener("submit", (event) => {
   }
 
   updateUserData();
+});
+
+btnSignOut.addEventListener("click", () => {
+  localStorage.removeItem("token");
+  window.location.href = "../../index.html";
+});
+
+btnDelete.addEventListener("click", async () => {
+  try {
+    const response = await api.delete("/usuarios", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      localStorage.removeItem("token");
+      window.location.href = "../../index.html";
+    }
+
+  } catch (error) {
+    console.log(error.response.data);
+  }
 });
